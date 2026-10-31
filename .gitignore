@@ -19,6 +19,7 @@ config.json
 *.swo
 
 # Temporary and test artifacts
+~$*
 patch_overlay.py
 apply_update.py
 overlay_window_backup.py

@@ -11,14 +11,13 @@ def create_deck():
     prs.slide_height = Inches(7.5)
     blank_layout = prs.slide_layouts[6]
 
-    # Color Palette - Dark Minimalist
+    # Minimalist Dark Palette
     BG_COLOR = RGBColor(11, 15, 25)         # Deep slate/black #0B0F19
-    CARD_BG = RGBColor(24, 32, 47)          # Card container #18202F
+    CARD_BG = RGBColor(22, 30, 44)          # Card container #161E2C
     CARD_BORDER = RGBColor(46, 59, 82)      # Subtle border #2E3B52
-    CARD_BG_ALT = RGBColor(30, 41, 59)      # Card active #1E293B
+    CARD_BG_ALT = RGBColor(28, 38, 56)      # Active card #1C2638
 
     ACCENT_INDIGO = RGBColor(99, 102, 241)  # #6366F1
-    ACCENT_VIOLET = RGBColor(139, 92, 246)  # #8B5CF6
     ACCENT_CYAN = RGBColor(6, 182, 212)     # #06B6D4
     ACCENT_EMERALD = RGBColor(16, 185, 129) # #10B981
     ACCENT_AMBER = RGBColor(245, 158, 11)   # #F59E0B
@@ -36,10 +35,10 @@ def create_deck():
         bg.line.fill.background()
         return bg
 
-    def add_badge(slide, text, left, top, width=Inches(2.5), height=Inches(0.4), color=ACCENT_INDIGO):
+    def add_badge(slide, text, left, top, width=Inches(2.4), height=Inches(0.36), color=ACCENT_INDIGO):
         shape = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
         shape.fill.solid()
-        shape.fill.fore_color.rgb = RGBColor(30, 27, 75) if color == ACCENT_INDIGO else RGBColor(19, 42, 38)
+        shape.fill.fore_color.rgb = RGBColor(26, 28, 50) if color == ACCENT_INDIGO else RGBColor(16, 36, 34)
         shape.line.color.rgb = color
         shape.line.width = Pt(1)
         tf = shape.text_frame
@@ -68,21 +67,19 @@ def create_deck():
     s1 = prs.slides.add_slide(blank_layout)
     apply_bg(s1)
 
-    # Accent decorative glow line
+    # Accent decorative top line
     glow = s1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.2), Inches(0.9), Inches(10.9), Inches(0.04))
     glow.fill.solid()
     glow.fill.fore_color.rgb = ACCENT_INDIGO
     glow.line.fill.background()
 
-    add_badge(s1, "HACKATHON SHOWCASE • AI ASSISTANT", Inches(1.2), Inches(1.2), Inches(3.6), Inches(0.38), ACCENT_CYAN)
+    add_badge(s1, "ПРОЕКТ НА КОНКУРС • AI ASSISTANT", Inches(1.2), Inches(1.2), Inches(3.4), Inches(0.38), ACCENT_CYAN)
 
-    # Logo
     logo_path = os.path.join(os.path.dirname(__file__), "logo.png")
     if os.path.exists(logo_path):
-        s1.shapes.add_picture(logo_path, Inches(1.2), Inches(1.85), width=Inches(1.2), height=Inches(1.2))
+        s1.shapes.add_picture(logo_path, Inches(1.2), Inches(1.85), width=Inches(1.25), height=Inches(1.25))
 
-    # Title box
-    tx1 = s1.shapes.add_textbox(Inches(2.6), Inches(1.65), Inches(9.5), Inches(1.6))
+    tx1 = s1.shapes.add_textbox(Inches(2.65), Inches(1.65), Inches(9.4), Inches(1.6))
     tf1 = tx1.text_frame
     tf1.word_wrap = True
     p1 = tf1.paragraphs[0]
@@ -99,374 +96,293 @@ def create_deck():
     p1_sub.font.bold = True
     p1_sub.font.color.rgb = ACCENT_INDIGO
 
-    # Description Box
-    desc_box = s1.shapes.add_textbox(Inches(1.2), Inches(3.4), Inches(10.9), Inches(1.2))
+    desc_box = s1.shapes.add_textbox(Inches(1.2), Inches(3.4), Inches(10.9), Inches(1.1))
     tf_desc = desc_box.text_frame
     tf_desc.word_wrap = True
     p_desc = tf_desc.paragraphs[0]
     p_desc.text = (
-        "Умный десктопный ассистент для Windows, который в реальном времени анализирует невербальные сигналы, "
-        "скрытый подтекст и накал в любых мессенджерах, помогая сформулировать идеальный ответ под любую цель."
+        "Умный десктопный ассистент для Windows: анализирует скрытый подтекст диалогов в любых мессенджерах "
+        "и помогает сформулировать идеальный ответ под конкретную цель."
     )
     p_desc.font.name = FONT_FAMILY
     p_desc.font.size = Pt(14)
     p_desc.font.color.rgb = TEXT_BODY
 
-    # 3 Info Cards at bottom
     features = [
-        ("🪟 Windows Overlay (Alt+S)", "Работает поверх всех окон без переключения контекста"),
-        ("🧠 Google Gemini 2.5 Flash", "Мультимодальный анализ визуальных скриншотов чата"),
-        ("🛡️ Quota Shield (3.5 Lite)", "Умный fallback при исчерпании лимитов модели"),
+        ("🪟 Плавающий оверлей", "Вызывается по Alt+S поверх любых чатов и окон без переключения контекста"),
+        ("🧠 Нейросетевой анализ", "Мультимодальное зрение по API: видит реальный интерфейс переписки"),
+        ("⚡ Готов к работе (.exe)", "Автономный запуск в один клик без установки дополнительного софта"),
     ]
     card_w = Inches(3.45)
-    card_h = Inches(1.8)
+    card_h = Inches(1.75)
     for i, (title, sub) in enumerate(features):
         cx = Inches(1.2) + i * Inches(3.72)
         add_card(s1, cx, Inches(4.85), card_w, card_h)
         tb = s1.shapes.add_textbox(cx + Inches(0.2), Inches(5.0), card_w - Inches(0.4), card_h - Inches(0.3))
         tf = tb.text_frame
         tf.word_wrap = True
-        p_t = tf.paragraphs[0]
-        p_t.text = title
-        p_t.font.name = FONT_FAMILY
-        p_t.font.size = Pt(14)
-        p_t.font.bold = True
-        p_t.font.color.rgb = TEXT_TITLE
+        pt = tf.paragraphs[0]
+        pt.text = title
+        pt.font.name = FONT_FAMILY
+        pt.font.size = Pt(14)
+        pt.font.bold = True
+        pt.font.color.rgb = TEXT_TITLE
 
-        p_s = tf.add_paragraph()
-        p_s.text = sub
-        p_s.font.name = FONT_FAMILY
-        p_s.font.size = Pt(11)
-        p_s.font.color.rgb = TEXT_MUTED
+        ps = tf.add_paragraph()
+        ps.text = sub
+        ps.font.name = FONT_FAMILY
+        ps.font.size = Pt(11)
+        ps.font.color.rgb = TEXT_MUTED
 
     # =========================================================================
-    # SLIDE 2: ПРОБЛЕМА (ВВЕДЕНИЕ И БОЛЬ)
+    # SLIDE 2: ОТ ПРОБЛЕМЫ К ИДЕЕ
     # =========================================================================
     s2 = prs.slides.add_slide(blank_layout)
     apply_bg(s2)
 
-    add_badge(s2, "01 • ВВЕДЕНИЕ И ПРОБЛЕМА", Inches(1.2), Inches(0.8), Inches(3.0), Inches(0.38), ACCENT_AMBER)
+    add_badge(s2, "01 • ОТ ПРОБЛЕМЫ К ИДЕЕ", Inches(1.2), Inches(0.8), Inches(2.9), Inches(0.38), ACCENT_AMBER)
 
-    h2 = s2.shapes.add_textbox(Inches(1.2), Inches(1.3), Inches(10.9), Inches(1.2))
+    h2 = s2.shapes.add_textbox(Inches(1.2), Inches(1.3), Inches(10.9), Inches(1.0))
     tf2 = h2.text_frame
     tf2.word_wrap = True
     p2 = tf2.paragraphs[0]
-    p2.text = "Текст слеп: почему мы теряем 70% смысла в чатах?"
+    p2.text = "Почему текст обманчив и как это решает VibeSense?"
     p2.font.name = FONT_FAMILY
     p2.font.size = Pt(28)
     p2.font.bold = True
     p2.font.color.rgb = TEXT_TITLE
 
     p2_sub = tf2.add_paragraph()
-    p2_sub.text = "В цифровом общении отсутствуют интонация, мимика и взгляд. Люди видят лишь сухие буквы — и регулярно ошибаются в намерениях собеседника."
+    p2_sub.text = "В цифровом общении теряется невербалика: интонации, паузы и мимика. Человек видит только сухие буквы."
     p2_sub.font.name = FONT_FAMILY
     p2_sub.font.size = Pt(13)
     p2_sub.font.color.rgb = TEXT_MUTED
 
-    problems = [
-        (
-            "🛑 Скрытая токсичность и сарказм",
-            "Пассивная агрессия, скрытое недовольство или скрытый сарказм внешне выглядят нейтрально. Человек пропускает тревожные сигналы и теряет контроль над диалогом."
-        ),
-        (
-            "⚡ Высокая цена одной фразы",
-            "Одно неверно подобранное слово на Авито или FunPay мгновенно срывает выгодную сделку. Неудачный ответ коллеге или клиенту перерастает в затяжной конфликт."
-        ),
-        (
-            "⏱️ Ступор перед экраном",
-            "«Как отказать без обид?», «Как сторговаться и не выглядеть хамом?», «Как ответить девушке, не показавшись навязчивым?». Люди тратят десятки минут в сомнениях."
-        ),
+    # Two large columns: Problem vs Idea
+    col_w = Inches(5.3)
+    col_h = Inches(4.3)
+
+    # Column Left: Problem
+    add_card(s2, Inches(1.2), Inches(2.55), col_w, col_h)
+    bar_left = s2.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.2), Inches(2.55), Inches(0.1), col_h)
+    bar_left.fill.solid()
+    bar_left.fill.fore_color.rgb = ACCENT_AMBER
+    bar_left.line.fill.background()
+
+    tb_prob = s2.shapes.add_textbox(Inches(1.5), Inches(2.75), col_w - Inches(0.5), col_h - Inches(0.4))
+    tf_p = tb_prob.text_frame
+    tf_p.word_wrap = True
+
+    tp = tf_p.paragraphs[0]
+    tp.text = "🛑 Проблема цифрового текста"
+    tp.font.name = FONT_FAMILY
+    tp.font.size = Pt(17)
+    tp.font.bold = True
+    tp.font.color.rgb = TEXT_TITLE
+
+    prob_points = [
+        ("• Скрытая агрессия и сарказм: ", "пассивный негатив часто прячется за вежливыми фразами — пропустить его легко."),
+        ("• Цена ошибки в один ответ: ", "сорванная сделка на Авито/FunPay, конфликт с клиентом или ссора в рабочем чате."),
+        ("• Ступор формулировок: ", "поиск ответа отнимает десятки минут: «как отказать без обид?», «как поторговаться?»."),
     ]
+    for bold_txt, norm_txt in prob_points:
+        p_item = tf_p.add_paragraph()
+        p_item.font.name = FONT_FAMILY
+        p_item.font.size = Pt(12)
+        run_b = p_item.add_run()
+        run_b.text = bold_txt
+        run_b.font.bold = True
+        run_b.font.color.rgb = ACCENT_AMBER
+        run_n = p_item.add_run()
+        run_n.text = norm_txt
+        run_n.font.color.rgb = TEXT_BODY
 
-    pw = Inches(3.45)
-    ph = Inches(3.8)
-    for i, (title, desc) in enumerate(problems):
-        px = Inches(1.2) + i * Inches(3.72)
-        add_card(s2, px, Inches(2.7), pw, ph)
+    # Column Right: Solution
+    add_card(s2, Inches(6.8), Inches(2.55), col_w, col_h)
+    bar_right = s2.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(6.8), Inches(2.55), Inches(0.1), col_h)
+    bar_right.fill.solid()
+    bar_right.fill.fore_color.rgb = ACCENT_EMERALD
+    bar_right.line.fill.background()
 
-        # Indicator tag
-        tag = s2.shapes.add_shape(MSO_SHAPE.RECTANGLE, px + Inches(0.3), Inches(2.95), Inches(0.4), Inches(0.05))
-        tag.fill.solid()
-        tag.fill.fore_color.rgb = ACCENT_AMBER
-        tag.line.fill.background()
+    tb_sol = s2.shapes.add_textbox(Inches(7.1), Inches(2.75), col_w - Inches(0.5), col_h - Inches(0.4))
+    tf_s = tb_sol.text_frame
+    tf_s.word_wrap = True
 
-        tb = s2.shapes.add_textbox(px + Inches(0.25), Inches(3.2), pw - Inches(0.5), ph - Inches(0.6))
-        tf = tb.text_frame
-        tf.word_wrap = True
+    ts = tf_s.paragraphs[0]
+    ts.text = "✨ Идея решения: VibeSense AI"
+    ts.font.name = FONT_FAMILY
+    ts.font.size = Pt(17)
+    ts.font.bold = True
+    ts.font.color.rgb = TEXT_TITLE
 
-        pt = tf.paragraphs[0]
-        pt.text = title
-        pt.font.name = FONT_FAMILY
-        pt.font.size = Pt(15)
-        pt.font.bold = True
-        pt.font.color.rgb = TEXT_TITLE
-
-        pd = tf.add_paragraph()
-        pd.text = desc
-        pd.font.name = FONT_FAMILY
-        pd.font.size = Pt(12)
-        pd.font.color.rgb = TEXT_BODY
+    sol_points = [
+        ("• «Чувствует» живой контекст: ", "анализирует скриншот чата (таймстампы, паузы, реакции, эмодзи), а не сухой текст."),
+        ("• Оцифровывает атмосферу: ", "шкала накала (1–10), уровень формальности и негласные правила именно этого чата."),
+        ("• Помогает в любых сферах: ", "P2P-торговля (сбить цену), рабочие чаты (снять накал), дейтинг и защита личных границ."),
+    ]
+    for bold_txt, norm_txt in sol_points:
+        p_item = tf_s.add_paragraph()
+        p_item.font.name = FONT_FAMILY
+        p_item.font.size = Pt(12)
+        run_b = p_item.add_run()
+        run_b.text = bold_txt
+        run_b.font.bold = True
+        run_b.font.color.rgb = ACCENT_EMERALD
+        run_n = p_item.add_run()
+        run_n.text = norm_txt
+        run_n.font.color.rgb = TEXT_BODY
 
     # =========================================================================
-    # SLIDE 3: ЦЕЛЕВАЯ АУДИТОРИЯ И СЦЕНАРИИ
+    # SLIDE 3: ПОЛЬЗОВАТЕЛЬСКИЙ СЦЕНАРИЙ И ФУНКЦИОНАЛ
     # =========================================================================
     s3 = prs.slides.add_slide(blank_layout)
     apply_bg(s3)
 
-    add_badge(s3, "02 • ЦЕЛЕВАЯ АУДИТОРИЯ", Inches(1.2), Inches(0.8), Inches(2.8), Inches(0.38), ACCENT_CYAN)
+    add_badge(s3, "02 • СЦЕНАРИЙ И ВОЗМОЖНОСТИ", Inches(1.2), Inches(0.8), Inches(3.4), Inches(0.38), ACCENT_CYAN)
 
-    h3 = s3.shapes.add_textbox(Inches(1.2), Inches(1.3), Inches(10.9), Inches(1.1))
+    h3 = s3.shapes.add_textbox(Inches(1.2), Inches(1.3), Inches(10.9), Inches(1.0))
     tf3 = h3.text_frame
     tf3.word_wrap = True
     p3 = tf3.paragraphs[0]
-    p3.text = "Кому и в каких ситуациях нужен VibeSense?"
+    p3.text = "Как работает сервис: от скриншота к готовому ответу"
     p3.font.name = FONT_FAMILY
     p3.font.size = Pt(28)
     p3.font.bold = True
     p3.font.color.rgb = TEXT_TITLE
 
     p3_sub = tf3.add_paragraph()
-    p3_sub.text = "Инструмент незаменим везде, где исход переписки влияет на деньги, нервы или отношения:"
+    p3_sub.text = "Быстрый цикл работы прямо во время переписки (занимает менее 2 секунд):"
     p3_sub.font.name = FONT_FAMILY
     p3_sub.font.size = Pt(13)
     p3_sub.font.color.rgb = TEXT_MUTED
 
-    audiences = [
-        ("🤝 P2P-торговля и фриланс", "Авито, FunPay, Kwork, биржи услуг", "Позволяет получить лучшую цену, моментально распознать сомнительного покупателя или дожать сомневающегося клиента."),
-        ("💼 Рабочие и деловые переписки", "Telegram, корпоративная почта, чаты команд", "Помогает ответить токсичному коллеге сухо и по фактам, сбить накал спора и не нарушить субординацию."),
-        ("✨ Дейтинг и личное общение", "Сайты знакомств, VK, социальные сети", "Помогает считывать искренний интерес, выдерживать баланс значимости и поддерживать интригу без кринжа."),
-        ("🛑 Трудные разговоры и личные границы", "Должники, родственники, требовательные заказчики", "Позволяет твёрдо сказать «нет», выставить личные границы без чувства вины и избежать манипуляций."),
+    # 4 Steps Horizontal Cards
+    steps = [
+        ("01", "Alt + S", "Открытие плавающего окна поверх любого мессенджера"),
+        ("02", "Снимок", "Выделение области чата (до 10 скриншотов подряд)"),
+        ("03", "Цель", "Выбор пресета (Торг, Накал, Влиться) или свой текст"),
+        ("04", "1 клик", "Готовый ответ копируется в буфер обмена для вставки"),
     ]
+    sw = Inches(2.55)
+    sh = Inches(1.9)
+    for i, (num, tag, desc) in enumerate(steps):
+        sx = Inches(1.2) + i * Inches(2.78)
+        add_card(s3, sx, Inches(2.55), sw, sh)
 
-    grid_w = Inches(5.3)
-    grid_h = Inches(2.05)
-    for i, (title, scope, text) in enumerate(audiences):
-        row = i // 2
-        col = i % 2
-        gx = Inches(1.2) + col * Inches(5.6)
-        gy = Inches(2.6) + row * Inches(2.25)
-
-        add_card(s3, gx, gy, grid_w, grid_h)
-
-        tb = s3.shapes.add_textbox(gx + Inches(0.3), gy + Inches(0.2), grid_w - Inches(0.6), grid_h - Inches(0.3))
+        tb = s3.shapes.add_textbox(sx + Inches(0.2), Inches(2.7), sw - Inches(0.4), sh - Inches(0.3))
         tf = tb.text_frame
         tf.word_wrap = True
-
         pt = tf.paragraphs[0]
-        pt.text = title
+        pt.text = f"{num} • {tag}"
         pt.font.name = FONT_FAMILY
-        pt.font.size = Pt(15)
+        pt.font.size = Pt(14)
         pt.font.bold = True
-        pt.font.color.rgb = TEXT_TITLE
-
-        ps = tf.add_paragraph()
-        ps.text = scope
-        ps.font.name = FONT_FAMILY
-        ps.font.size = Pt(11)
-        ps.font.bold = True
-        ps.font.color.rgb = ACCENT_CYAN
+        pt.font.color.rgb = ACCENT_CYAN
 
         pd = tf.add_paragraph()
-        pd.text = text
+        pd.text = desc
         pd.font.name = FONT_FAMILY
         pd.font.size = Pt(11)
         pd.font.color.rgb = TEXT_BODY
 
+    # 2 Feature Bottom Cards
+    feat_w = Inches(5.3)
+    feat_h = Inches(2.05)
+
+    add_card(s3, Inches(1.2), Inches(4.75), feat_w, feat_h)
+    tb_f1 = s3.shapes.add_textbox(Inches(1.4), Inches(4.9), feat_w - Inches(0.4), feat_h - Inches(0.3))
+    tff1 = tb_f1.text_frame
+    tff1.word_wrap = True
+    pf1_t = tff1.paragraphs[0]
+    pf1_t.text = "🎭 Анализ атмосферы и негласных правил"
+    pf1_t.font.name = FONT_FAMILY
+    pf1_t.font.size = Pt(14)
+    pf1_t.font.bold = True
+    pf1_t.font.color.rgb = TEXT_TITLE
+
+    pf1_d = tff1.add_paragraph()
+    pf1_d.text = (
+        "Модель оценивает накал (1–10 с цветовой индикацией), дистанцию и скрытые законы чата "
+        "(например: «не душнить», «писать коротко», «сарказм уместен»)."
+    )
+    pf1_d.font.name = FONT_FAMILY
+    pf1_d.font.size = Pt(11)
+    pf1_d.font.color.rgb = TEXT_BODY
+
+    add_card(s3, Inches(6.8), Inches(4.75), feat_w, feat_h)
+    tb_f2 = s3.shapes.add_textbox(Inches(7.0), Inches(4.9), feat_w - Inches(0.4), feat_h - Inches(0.3))
+    tff2 = tb_f2.text_frame
+    tff2.word_wrap = True
+    pf2_t = tff2.paragraphs[0]
+    pf2_t.text = "✍️ Аудит черновика и адаптивные ответы"
+    pf2_t.font.name = FONT_FAMILY
+    pf2_t.font.size = Pt(14)
+    pf2_t.font.bold = True
+    pf2_t.font.color.rgb = TEXT_TITLE
+
+    pf2_d = tff2.add_paragraph()
+    pf2_d.text = (
+        "Если вписан черновик ответа, ИИ укажет на его риски. На выбор дается 3–4 готовых стиля "
+        "(твердый, дипломатичный, дружелюбный) с обоснованием эффекта каждой фразы."
+    )
+    pf2_d.font.name = FONT_FAMILY
+    pf2_d.font.size = Pt(11)
+    pf2_d.font.color.rgb = TEXT_BODY
+
     # =========================================================================
-    # SLIDE 4: ИДЕЯ И КОНЦЕПЦИЯ РЕШЕНИЯ
+    # SLIDE 4: ТЕХНИЧЕСКАЯ ЧАСТЬ (БЕЗ РЕКЛАМЫ, ПО ДЕЛУ)
     # =========================================================================
     s4 = prs.slides.add_slide(blank_layout)
     apply_bg(s4)
 
-    add_badge(s4, "03 • КОНЦЕПЦИЯ И ИДЕЯ", Inches(1.2), Inches(0.8), Inches(2.8), Inches(0.38), ACCENT_VIOLET)
+    add_badge(s4, "03 • ТЕХНИЧЕСКАЯ ЧАСТЬ", Inches(1.2), Inches(0.8), Inches(3.0), Inches(0.38), ACCENT_INDIGO)
 
-    h4 = s4.shapes.add_textbox(Inches(1.2), Inches(1.3), Inches(10.9), Inches(1.1))
+    h4 = s4.shapes.add_textbox(Inches(1.2), Inches(1.3), Inches(10.9), Inches(1.0))
     tf4 = h4.text_frame
     tf4.word_wrap = True
     p4 = tf4.paragraphs[0]
-    p4.text = "VibeSense AI: сервис, который «чувствует» переписку"
+    p4.text = "Архитектура решения: простота, скорость и безопасность"
     p4.font.name = FONT_FAMILY
     p4.font.size = Pt(28)
     p4.font.bold = True
     p4.font.color.rgb = TEXT_TITLE
 
     p4_sub = tf4.add_paragraph()
-    p4_sub.text = "Мы соединили мультимодальное зрение ИИ и поведенческую психологию в удобный оверлей поверх экрана:"
+    p4_sub.text = "Разработано как независимый инструмент без необходимости сложной настройки:"
     p4_sub.font.name = FONT_FAMILY
     p4_sub.font.size = Pt(13)
     p4_sub.font.color.rgb = TEXT_MUTED
 
-    pillars = [
+    tech_blocks = [
         (
-            "👁️ Визуальный контекст (Vision)",
-            "Модель анализирует не голый скопированный текст, а скриншот живого интерфейса: расположение реплик, паузы между сообщениями, эмодзи, стикеры и реакции. Это возвращает те самые потерянные 70% невербалики.",
-            ACCENT_CYAN
+            "🖥️ Графический интерфейс (PyQt6)",
+            "Легковесный десктопный оверлей",
+            "Плавающее фреймлесс-окно всегда под рукой поверх любых приложений. Глобальный перехват Alt+S и интеграция в трей Windows позволяют работать без отвлечения от диалога."
         ),
         (
-            "📊 Оцифровка атмосферы чата",
-            "ИИ вычисляет числовые метрики: шкалу напряжения (1–10), уровень формальности, социальную дистанцию и негласные правила именно этого чата (например: «здесь принято шутить», «точки в конце выглядят грубо»).",
-            ACCENT_INDIGO
+            "🧠 Нейросетевой анализ по API",
+            "Мультимодальная обработка кадров",
+            "Скриншоты диалога напрямую передаются в мультимодальную языковую модель по API (Gemini Vision) со строгой JSON-валидацией (Pydantic). Реализовано резервное переключение при лимитах."
         ),
         (
-            "🎯 Точная калибровка ответов",
-            "Система берет ваш черновик (или пишет с нуля) и калибрует его под заданную цель: сбить агрессию, сторговаться, влиться в компанию или выставить жесткие границы в 1 клик.",
-            ACCENT_EMERALD
+            "🔒 Безопасность и автономность",
+            "Без риска бана аккаунтов",
+            "Захват идет через системный буфер памяти без записи на диск. Приложение не внедряется в мессенджеры (Telegram, WhatsApp) и скомпилировано в единый EXE-файл без установки Python."
         ),
     ]
 
-    for i, (title, text, col_acc) in enumerate(pillars):
-        px = Inches(1.2) + i * Inches(3.72)
-        add_card(s4, px, Inches(2.65), pw, Inches(3.9))
+    tw = Inches(3.45)
+    th = Inches(4.3)
+    for i, (title, sub, desc) in enumerate(tech_blocks):
+        tx = Inches(1.2) + i * Inches(3.72)
+        add_card(s4, tx, Inches(2.55), tw, th)
 
-        bar = s4.shapes.add_shape(MSO_SHAPE.RECTANGLE, px + Inches(0.3), Inches(2.9), Inches(0.5), Inches(0.06))
+        bar = s4.shapes.add_shape(MSO_SHAPE.RECTANGLE, tx + Inches(0.3), Inches(2.8), Inches(0.4), Inches(0.05))
         bar.fill.solid()
-        bar.fill.fore_color.rgb = col_acc
+        bar.fill.fore_color.rgb = ACCENT_INDIGO
         bar.line.fill.background()
 
-        tb = s4.shapes.add_textbox(px + Inches(0.3), Inches(3.15), pw - Inches(0.6), Inches(3.2))
-        tf = tb.text_frame
-        tf.word_wrap = True
-
-        pt = tf.paragraphs[0]
-        pt.text = title
-        pt.font.name = FONT_FAMILY
-        pt.font.size = Pt(15)
-        pt.font.bold = True
-        pt.font.color.rgb = TEXT_TITLE
-
-        pd = tf.add_paragraph()
-        pd.text = text
-        pd.font.name = FONT_FAMILY
-        pd.font.size = Pt(12)
-        pd.font.color.rgb = TEXT_BODY
-
-    # =========================================================================
-    # SLIDE 5: КАК ЭТО РАБОТАЕТ (ПОЛЬЗОВАТЕЛЬСКИЙ СЦЕНАРИЙ)
-    # =========================================================================
-    s5 = prs.slides.add_slide(blank_layout)
-    apply_bg(s5)
-
-    add_badge(s5, "04 • ПОЛЬЗОВАТЕЛЬСКИЙ СЦЕНАРИЙ", Inches(1.2), Inches(0.8), Inches(3.5), Inches(0.38), ACCENT_EMERALD)
-
-    h5 = s5.shapes.add_textbox(Inches(1.2), Inches(1.3), Inches(10.9), Inches(1.1))
-    tf5 = h5.text_frame
-    tf5.word_wrap = True
-    p5 = tf5.paragraphs[0]
-    p5.text = "Мгновенный результат за 4 простых действия"
-    p5.font.name = FONT_FAMILY
-    p5.font.size = Pt(28)
-    p5.font.bold = True
-    p5.font.color.rgb = TEXT_TITLE
-
-    p5_sub = tf5.add_paragraph()
-    p5_sub.text = "Никаких копирований логов и переключений между окнами — ассистент прямо перед глазами:"
-    p5_sub.font.name = FONT_FAMILY
-    p5_sub.font.size = Pt(13)
-    p5_sub.font.color.rgb = TEXT_MUTED
-
-    steps = [
-        ("01", "Alt + S", "Вызов оверлея", "Нажатие глобальной горячей клавиши мгновенно открывает стильное плавающее окно поверх любого мессенджера или сайта."),
-        ("02", "📸 Снимок", "Захват экрана", "Нажатие кнопки активирует рамку выделения. Можно прикрепить до 10 кадров переписки подряд при прокрутке длинного чата."),
-        ("03", "🎯 Цель", "Выбор стратегии", "Выберите готовый пресет (Сторговаться, Сбить накал, Влиться) или введите свою задачу словами (например, «вернуть долг»)."),
-        ("04", "⚡ Ответ", "Вставка в 1 клик", "Через 1.5 сек модель выдает психологический разбор и 3–4 варианта ответов. Клик на карточку копирует текст для отправки."),
-    ]
-
-    sw = Inches(2.55)
-    sh = Inches(4.0)
-    for i, (num, tag, title, desc) in enumerate(steps):
-        sx = Inches(1.2) + i * Inches(2.78)
-        add_card(s5, sx, Inches(2.65), sw, sh)
-
-        # Big Step Number
-        num_box = s5.shapes.add_textbox(sx + Inches(0.2), Inches(2.8), Inches(1.2), Inches(0.6))
-        ntf = num_box.text_frame
-        ntf.margin_left = ntf.margin_top = 0
-        np = ntf.paragraphs[0]
-        np.text = num
-        np.font.name = FONT_FAMILY
-        np.font.size = Pt(22)
-        np.font.bold = True
-        np.font.color.rgb = ACCENT_EMERALD
-
-        tb = s5.shapes.add_textbox(sx + Inches(0.2), Inches(3.45), sw - Inches(0.4), sh - Inches(0.9))
-        tf = tb.text_frame
-        tf.word_wrap = True
-
-        pt = tf.paragraphs[0]
-        pt.text = tag
-        pt.font.name = FONT_FAMILY
-        pt.font.size = Pt(14)
-        pt.font.bold = True
-        pt.font.color.rgb = TEXT_TITLE
-
-        ps = tf.add_paragraph()
-        ps.text = title
-        ps.font.name = FONT_FAMILY
-        ps.font.size = Pt(11)
-        ps.font.bold = True
-        ps.font.color.rgb = ACCENT_CYAN
-
-        pd = tf.add_paragraph()
-        pd.text = desc
-        pd.font.name = FONT_FAMILY
-        pd.font.size = Pt(11)
-        pd.font.color.rgb = TEXT_BODY
-
-    # =========================================================================
-    # SLIDE 6: КЛЮЧЕВОЙ ФУНКЦИОНАЛ
-    # =========================================================================
-    s6 = prs.slides.add_slide(blank_layout)
-    apply_bg(s6)
-
-    add_badge(s6, "05 • КЛЮЧЕВЫЕ ВОЗМОЖНОСТИ", Inches(1.2), Inches(0.8), Inches(3.2), Inches(0.38), ACCENT_INDIGO)
-
-    h6 = s6.shapes.add_textbox(Inches(1.2), Inches(1.3), Inches(10.9), Inches(1.1))
-    tf6 = h6.text_frame
-    tf6.word_wrap = True
-    p6 = tf6.paragraphs[0]
-    p6.text = "Что умеет ассистент под капотом?"
-    p6.font.name = FONT_FAMILY
-    p6.font.size = Pt(28)
-    p6.font.bold = True
-    p6.font.color.rgb = TEXT_TITLE
-
-    p6_sub = tf6.add_paragraph()
-    p6_sub.text = "Интеллектуальные инструменты для любого уровня сложности общения:"
-    p6_sub.font.name = FONT_FAMILY
-    p6_sub.font.size = Pt(13)
-    p6_sub.font.color.rgb = TEXT_MUTED
-
-    features_deep = [
-        (
-            "🎭 Детектор скрытого вайба и негласных правил",
-            "Вычисляет шкалу накала / агрессии (от 1 до 10 с динамической цветовой индикацией), степень формальности общения и формулирует скрытые правила чата (например: «не душнить», «писать короткими репликами», «применять сарказм»).",
-            ACCENT_AMBER
-        ),
-        (
-            "✍️ Аудит черновика и адаптивные стили ответов",
-            "Если вы ввели черновик (например: «го за 500»), ИИ разберет его слабые стороны и перепишет в 3–4 различных стилях: дипломатичном, твердом, дружелюбном или компромиссном — с объяснением психологического эффекта каждой фразы.",
-            ACCENT_CYAN
-        ),
-        (
-            "🛡️ Двойная модель с Auto-Fallback (Quota Shield)",
-            "В шапке доступен выбор модели: Gemini 2.5 Flash (основная) и 3.5 Flash Lite (резервная). При исчерпании суточной квоты запросов программа сама бесшовно переключает модель, не прерывая рабочий процесс пользователя.",
-            ACCENT_EMERALD
-        ),
-    ]
-
-    f_w = Inches(10.9)
-    f_h = Inches(1.18)
-    for i, (title, desc, acc) in enumerate(features_deep):
-        fy = Inches(2.65) + i * Inches(1.4)
-        add_card(s6, Inches(1.2), fy, f_w, f_h)
-
-        # Left Accent bar
-        bar = s6.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.2), fy, Inches(0.12), f_h)
-        bar.fill.solid()
-        bar.fill.fore_color.rgb = acc
-        bar.line.fill.background()
-
-        tb = s6.shapes.add_textbox(Inches(1.5), fy + Inches(0.12), f_w - Inches(0.5), f_h - Inches(0.24))
+        tb = s4.shapes.add_textbox(tx + Inches(0.25), Inches(3.05), tw - Inches(0.5), th - Inches(0.7))
         tf = tb.text_frame
         tf.word_wrap = True
 
@@ -474,62 +390,6 @@ def create_deck():
         pt.text = title
         pt.font.name = FONT_FAMILY
         pt.font.size = Pt(14)
-        pt.font.bold = True
-        pt.font.color.rgb = TEXT_TITLE
-
-        pd = tf.add_paragraph()
-        pd.text = desc
-        pd.font.name = FONT_FAMILY
-        pd.font.size = Pt(11)
-        pd.font.color.rgb = TEXT_BODY
-
-    # =========================================================================
-    # SLIDE 7: ТЕХНИЧЕСКАЯ ЧАСТЬ (ПРОСТО О СЛОЖНОМ)
-    # =========================================================================
-    s7 = prs.slides.add_slide(blank_layout)
-    apply_bg(s7)
-
-    add_badge(s7, "06 • ТЕХНИЧЕСКАЯ АРХИТЕКТУРА", Inches(1.2), Inches(0.8), Inches(3.5), Inches(0.38), ACCENT_CYAN)
-
-    h7 = s7.shapes.add_textbox(Inches(1.2), Inches(1.3), Inches(10.9), Inches(1.1))
-    tf7 = h7.text_frame
-    tf7.word_wrap = True
-    p7 = tf7.paragraphs[0]
-    p7.text = "Техническая основа: надежно, быстро и безопасно"
-    p7.font.name = FONT_FAMILY
-    p7.font.size = Pt(28)
-    p7.font.bold = True
-    p7.font.color.rgb = TEXT_TITLE
-
-    p7_sub = tf7.add_paragraph()
-    p7_sub.text = "Стек современных технологий, гарантирующий плавную работу без фризов:"
-    p7_sub.font.name = FONT_FAMILY
-    p7_sub.font.size = Pt(13)
-    p7_sub.font.color.rgb = TEXT_MUTED
-
-    tech_cards = [
-        ("🖥️ PyQt6 Frameless UI", "Плавающий оверлей с блокировкой скролла", "Кастомный компонент FitScrollArea принудительно исключает горизонтальный сдвиг. Поддержка High-DPI экранов (125%, 150%, 200%) и минимизация в трей Windows."),
-        ("🧠 Gemini Multimodal & Pydantic", "Визуальные токены и строгий JSON", "Скриншоты диалога отправляются напрямую в мультимодальную модель Google Gemini через Structured Output. Pydantic v2 гарантирует 100% валидный формат ответа."),
-        ("🔒 Безопасность и антифрод", "Полная конфиденциальность данных", "Захват происходит исключительно через системный экранный буфер Windows (QBuffer) без записи файлов на диск. Никаких токенов или юзерботов — 0% риска бана в Telegram."),
-        ("📦 Standalone Portable EXE", "Запуск из одного клика (70 МБ)", "Собран через PyInstaller в единый бинарник со встроенными библиотеками, иконкой и API-ключом («Zero-Config»). Не требует установки Python или сторонних зависимостей."),
-    ]
-
-    for i, (title, sub, text) in enumerate(tech_cards):
-        row = i // 2
-        col = i % 2
-        gx = Inches(1.2) + col * Inches(5.6)
-        gy = Inches(2.65) + row * Inches(2.2)
-
-        add_card(s7, gx, gy, grid_w, Inches(2.0))
-
-        tb = s7.shapes.add_textbox(gx + Inches(0.3), gy + Inches(0.18), grid_w - Inches(0.6), Inches(1.7))
-        tf = tb.text_frame
-        tf.word_wrap = True
-
-        pt = tf.paragraphs[0]
-        pt.text = title
-        pt.font.name = FONT_FAMILY
-        pt.font.size = Pt(15)
         pt.font.bold = True
         pt.font.color.rgb = TEXT_TITLE
 
@@ -538,52 +398,51 @@ def create_deck():
         ps.font.name = FONT_FAMILY
         ps.font.size = Pt(11)
         ps.font.bold = True
-        ps.font.color.rgb = ACCENT_INDIGO
+        ps.font.color.rgb = ACCENT_CYAN
 
         pd = tf.add_paragraph()
-        pd.text = text
+        pd.text = desc
         pd.font.name = FONT_FAMILY
         pd.font.size = Pt(11)
         pd.font.color.rgb = TEXT_BODY
 
     # =========================================================================
-    # SLIDE 8: ЗАКЛЮЧЕНИЕ И ИТОГИ
+    # SLIDE 5: ИТОГИ И РЕЗУЛЬТАТЫ
     # =========================================================================
-    s8 = prs.slides.add_slide(blank_layout)
-    apply_bg(s8)
+    s5 = prs.slides.add_slide(blank_layout)
+    apply_bg(s5)
 
-    add_badge(s8, "07 • ЗАКЛЮЧЕНИЕ И ИТОГИ", Inches(1.2), Inches(0.8), Inches(3.0), Inches(0.38), ACCENT_EMERALD)
+    add_badge(s5, "04 • ИТОГИ И ЦЕННОСТЬ", Inches(1.2), Inches(0.8), Inches(2.8), Inches(0.38), ACCENT_EMERALD)
 
-    h8 = s8.shapes.add_textbox(Inches(1.2), Inches(1.3), Inches(10.9), Inches(1.1))
-    tf8 = h8.text_frame
-    tf8.word_wrap = True
-    p8 = tf8.paragraphs[0]
-    p8.text = "VibeSense AI: уверенность в каждом сообщении"
-    p8.font.name = FONT_FAMILY
-    p8.font.size = Pt(28)
-    p8.font.bold = True
-    p8.font.color.rgb = TEXT_TITLE
+    h5 = s5.shapes.add_textbox(Inches(1.2), Inches(1.3), Inches(10.9), Inches(1.0))
+    tf5 = h5.text_frame
+    tf5.word_wrap = True
+    p5 = tf5.paragraphs[0]
+    p5.text = "VibeSense AI: уверенность в каждом сообщении"
+    p5.font.name = FONT_FAMILY
+    p5.font.size = Pt(28)
+    p5.font.bold = True
+    p5.font.color.rgb = TEXT_TITLE
 
-    p8_sub = tf8.add_paragraph()
-    p8_sub.text = "Проект превращает невербальный хаос переписок в понятный, предсказуемый и управляемый диалог."
-    p8_sub.font.name = FONT_FAMILY
-    p8_sub.font.size = Pt(13)
-    p8_sub.font.color.rgb = TEXT_MUTED
+    p5_sub = tf5.add_paragraph()
+    p5_sub.text = "Сервис превращает невербальный хаос переписок в понятный и управляемый диалог."
+    p5_sub.font.name = FONT_FAMILY
+    p5_sub.font.size = Pt(13)
+    p5_sub.font.color.rgb = TEXT_MUTED
 
-    # 3 Big Stat Cards
     stats = [
-        ("< 2 сек", "Мгновенный анализ", "От снимка экрана до готовых вариантов идеального ответа"),
-        ("100%", "Совместимость", "Работает в Telegram, Discord, WhatsApp, браузере и играх"),
-        ("0 квот", "Отказоустойчивость", "Двойная модель: 2.5 Flash + автоматический 3.5 Flash Lite"),
+        ("< 2 сек", "Скорость анализа", "От снимка экрана до готовых вариантов ответа под выбранную цель"),
+        ("100%", "Совместимость", "Работает в Telegram, Discord, WhatsApp, браузере и любых окнах"),
+        ("1 клик", "Автономность", "Собран единый VibeSense.exe — запускается сразу без настроек"),
     ]
 
     stat_w = Inches(3.45)
     stat_h = Inches(2.2)
     for i, (num, lbl, sub) in enumerate(stats):
         sx = Inches(1.2) + i * Inches(3.72)
-        add_card(s8, sx, Inches(2.6), stat_w, stat_h)
+        add_card(s5, sx, Inches(2.6), stat_w, stat_h)
 
-        tb = s8.shapes.add_textbox(sx + Inches(0.2), Inches(2.75), stat_w - Inches(0.4), stat_h - Inches(0.3))
+        tb = s5.shapes.add_textbox(sx + Inches(0.2), Inches(2.75), stat_w - Inches(0.4), stat_h - Inches(0.3))
         tf = tb.text_frame
         tf.word_wrap = True
 
@@ -608,36 +467,43 @@ def create_deck():
         ps.font.color.rgb = TEXT_MUTED
 
     # Bottom Callout Link Card
-    callout = add_card(s8, Inches(1.2), Inches(5.15), Inches(10.9), Inches(1.6), CARD_BG_ALT, ACCENT_INDIGO)
-    ctb = s8.shapes.add_textbox(Inches(1.5), Inches(5.25), Inches(10.3), Inches(1.4))
+    callout = add_card(s5, Inches(1.2), Inches(5.15), Inches(10.9), Inches(1.6), CARD_BG_ALT, ACCENT_INDIGO)
+    ctb = s5.shapes.add_textbox(Inches(1.5), Inches(5.25), Inches(10.3), Inches(1.4))
     ctf = ctb.text_frame
     ctf.word_wrap = True
 
     cp1 = ctf.paragraphs[0]
-    cp1.text = "🚀 Открытый код и готовый бинарник доступны на GitHub:"
+    cp1.text = "🚀 Исходный код и готовый бинарник опубликованы в открытом доступе:"
     cp1.font.name = FONT_FAMILY
-    cp1.font.size = Pt(15)
+    cp1.font.size = Pt(14)
     cp1.font.bold = True
     cp1.font.color.rgb = TEXT_TITLE
 
     cp2 = ctf.add_paragraph()
-    cp2.text = "• Репозиторий:  https://github.com/EgorDushenkov/ELAY"
+    cp2.text = "• Репозиторий проекта:  https://github.com/EgorDushenkov/ELAY"
     cp2.font.name = FONT_FAMILY
     cp2.font.size = Pt(12)
     cp2.font.bold = True
     cp2.font.color.rgb = ACCENT_CYAN
 
     cp3 = ctf.add_paragraph()
-    cp3.text = "• Скачать VibeSense.exe:  https://github.com/EgorDushenkov/ELAY/releases/tag/v1.0.0"
+    cp3.text = "• Скачать релиз VibeSense.exe:  https://github.com/EgorDushenkov/ELAY/releases/tag/v1.0.0"
     cp3.font.name = FONT_FAMILY
     cp3.font.size = Pt(12)
     cp3.font.bold = True
     cp3.font.color.rgb = ACCENT_EMERALD
 
-    # Output file
-    out_path = os.path.join(os.path.dirname(__file__), "VibeSense_AI_Presentation.pptx")
-    prs.save(out_path)
-    print(f"SUCCESS: Presentation saved to {out_path}")
+    # Save
+    out_v2 = os.path.join(os.path.dirname(__file__), "VibeSense_AI_Presentation_v2.pptx")
+    prs.save(out_v2)
+    print(f"SUCCESS: Saved {out_v2}")
+
+    out_main = os.path.join(os.path.dirname(__file__), "VibeSense_AI_Presentation.pptx")
+    try:
+        prs.save(out_main)
+        print(f"SUCCESS: Overwritten {out_main}")
+    except Exception as e:
+        print(f"Notice: Could not overwrite {out_main} (likely open in PowerPoint): {e}")
 
 if __name__ == "__main__":
     create_deck()
