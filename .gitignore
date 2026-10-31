@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller build outputs and standalone executables
+build/
+dist/
+*.exe
+
+# Local configs and secrets
+.env
+config.json
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary and test artifacts
+patch_overlay.py
+apply_update.py
+overlay_window_backup.py
