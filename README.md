@@ -34,20 +34,3 @@
   * **3.5 Flash Lite** (автоматически подхватит работу, если кончились запросы на 2.5 Flash).
 
 ---
-
-## 🛠️ Запуск из исходного кода
-
-Если вы хотите запустить проект через Python:
-
-```bash
-# Клонируйте репозиторий
-git clone https://github.com/EgorDushenkov/ELAY.git
-cd ELAY
-
-# Установите зависимости
-pip install -r requirements.txt
-
-# Запустите
-python main.py
-# или запустите run.bat
-```
