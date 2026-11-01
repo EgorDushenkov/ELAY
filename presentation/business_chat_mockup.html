@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VibeSense AI — Пример деловой переписки</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    /* Outer Presentation Container */
+    .showcase-container {
+      width: 1240px;
+      height: 740px;
+      background: radial-gradient(circle at 80% 20%, #1e1b4b 0%, #0f172a 50%, #090d16 100%);
+      border: 1px solid #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+      display: flex;
+      gap: 20px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ambient glow elements */
+    .glow-1 {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      top: -100px;
+      right: -100px;
+      pointer-events: none;
+    }
+    .glow-2 {
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+      bottom: -80px;
+      left: 10%;
+      pointer-events: none;
+    }
+
+    /* ======================================================== */
+    /* LEFT: TELEGRAM MESSENGER CHAT WINDOW                     */
+    /* ======================================================== */
+    .chat-window {
+      flex: 1.15;
+      background-color: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    /* Window Header */
+    .window-header {
+      background-color: #1e293b;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #334155;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 7px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+    .dot-red { background-color: #ef4444; }
+    .dot-yellow { background-color: #f59e0b; }
+    .dot-green { background-color: #10b981; }
+
+    .window-title {
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    /* Contact Bar */
+    .contact-bar {
+      background-color: #162032;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .contact-info {
+      flex: 1;
+    }
+
+    .contact-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .contact-badge {
+      font-size: 10px;
+      background-color: #1e293b;
+      color: #38bdf8;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid #0284c7;
+      font-weight: 600;
+    }
+
+    .contact-status {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* Chat Messages Body */
+    .chat-body {
+      flex: 1;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background-color: #0b1120;
+      background-image: radial-gradient(#1e293b 0.75px, transparent 0.75px);
+      background-size: 18px 18px;
+      overflow-y: auto;
+    }
+
+    .date-separator {
+      align-self: center;
+      background-color: #1e293b;
+      color: #94a3b8;
+      font-size: 11px;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .msg-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-width: 82%;
+    }
+
+    .msg-incoming {
+      align-self: flex-start;
+    }
+
+    .bubble-incoming {
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      padding: 10px 14px;
+      border-radius: 14px 14px 14px 2px;
+      color: #f1f5f9;
+      font-size: 13.5px;
+      line-height: 1.45;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .bubble-time {
+      float: right;
+      font-size: 11px;
+      color: #64748b;
+      margin-left: 10px;
+      margin-top: 4px;
+    }
+
+    .highlight-tension {
+      background-color: rgba(239, 68, 68, 0.2);
+      border-bottom: 2px dashed #f87171;
+      padding: 1px 3px;
+      border-radius: 2px;
+    }
+
+    /* Draft Input Box */
+    .chat-input-area {
+      background-color: #162032;
+      border-top: 1px solid #334155;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .draft-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #f59e0b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .draft-content {
+      background-color: #0f172a;
+      border: 1px solid #dc2626;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.4;
+      position: relative;
+    }
+
+    .draft-critique-tag {
+      position: absolute;
+      top: -9px;
+      right: 12px;
+      background-color: #ef4444;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ======================================================== */
+    /* RIGHT: VIBESENSE AI FLOATING OVERLAY PANEL               */
+    /* ======================================================== */
+    .vibesense-overlay {
+      flex: 0.85;
+      background: linear-gradient(180deg, #131d31 0%, #0c1322 100%);
+      border: 1px solid #4f46e5;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 15px 35px rgba(79, 70, 229, 0.25);
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    /* Overlay Header */
+    .overlay-header {
+      background-color: #1a243a;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #2e3b52;
+    }
+
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .app-icon {
+      font-size: 18px;
+    }
+
+    .app-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.4px;
+    }
+
+    .app-badge {
+      font-size: 11px;
+      background-color: #312e81;
+      color: #a5b4fc;
+      border: 1px solid #6366f1;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    /* Overlay Body */
+    .overlay-body {
+      flex: 1;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    /* Atmosphere Card */
+    .card {
+      background-color: #162032;
+      border: 1px solid #2e3b52;
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title-vibe { color: #818cf8; }
+    .card-title-advice { color: #f59e0b; }
+    .card-title-reply { color: #10b981; }
+
+    .summary-text {
+      font-size: 12.5px;
+      color: #e2e8f0;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    /* Metrics Row */
+    .metrics-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .metric-pill {
+      flex: 1;
+      background-color: #0f172a;
+      border-radius: 6px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #1e293b;
+    }
+
+    .metric-label {
+      font-size: 10px;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .metric-val {
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+    .val-tension { color: #ef4444; }
+    .val-formality { color: #38bdf8; }
+
+    .rules-box {
+      background-color: #0f172a;
+      border-left: 3px solid #f59e0b;
+      padding: 6px 10px;
+      border-radius: 0 6px 6px 0;
+      font-size: 11px;
+      color: #cbd5e1;
+      line-height: 1.35;
+    }
+
+    /* Calibrated Reply Card */
+    .reply-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 78, 59, 0.2) 100%);
+      border: 1px solid #059669;
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .reply-style {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #34d399;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .reply-text {
+      font-size: 12px;
+      color: #f8fafc;
+      line-height: 1.45;
+      background-color: rgba(15, 23, 42, 0.6);
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .copy-pill {
+      background-color: #059669;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="showcase-container">
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
+
+    <!-- ======================================================== -->
+    <!-- LEFT: TELEGRAM MESSENGER CHAT                            -->
+    <!-- ======================================================== -->
+    <div class="chat-window">
+      <!-- Window Controls -->
+      <div class="window-header">
+        <div class="window-controls">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        <div class="window-title">Telegram Desktop — Рабочий диалог</div>
+      </div>
+
+      <!-- Contact Info Bar -->
+      <div class="contact-bar">
+        <div class="avatar">АМ</div>
+        <div class="contact-info">
+          <div class="contact-name">
+            Алексей Морозов
+            <span class="contact-badge">ЗАКАЗЧИК</span>
+          </div>
+          <div class="contact-status">ООО «Вектор Про» • был(а) 8 минут назад</div>
+        </div>
+      </div>
+
+      <!-- Messages Body -->
+      <div class="chat-body">
+        <div class="date-separator">Вторник, 11:20</div>
+
+        <!-- Incoming Message 1 -->
+        <div class="msg-group msg-incoming">
+          <div class="bubble-incoming">
+            Добрый день! Хотел уточнить статус по разработке сервиса. По договору запуск витрины и интеграция с платежным шлюзом запланированы на этот четверг.
+            <span class="bubble-time">11:20</span>
+          </div>
+        </div>
+
+        <!-- Incoming Message 2 (Tension Trigger) -->
+        <div class="msg-group msg-incoming">
+          <div class="bubble-incoming">
+            Сегодня уже вторник, а на тестовом стенде до сих пор нет обновлений. Мы вообще <span class="highlight-tension">успеваем, или у вас возникли сложности? 🙂</span>
+            <span class="bubble-time">11:22</span>
+          </div>
+        </div>
+
+        <!-- Incoming Message 3 (Ultimatum) -->
+        <div class="msg-group msg-incoming">
+          <div class="bubble-incoming">
+            Нам критически важно понимать реальную картину прямо сейчас, потому что в пятницу презентация совету директоров. <span class="highlight-tension">Срыв дедлайна для нас абсолютно неприемлем.</span>
+            <span class="bubble-time">11:23</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Draft Area -->
+      <div class="chat-input-area">
+        <div class="draft-label">
+          ⚠️ Черновик сообщения пользователя (до анализа нейросетью):
+        </div>
+        <div class="draft-content">
+          <span class="draft-critique-tag">ОШИБКИ И СЛАБОСТЬ</span>
+          Здравствуйте, Алексей! Извините пожалуйста за задержку... У нас просто заболел бэкендер и было очень много багов. Мы очень постараемся всё успеть, не волнуйтесь! 🙏
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- RIGHT: VIBESENSE AI OVERLAY (ANALYSIS IN ACTION)          -->
+    <!-- ======================================================== -->
+    <div class="vibesense-overlay">
+      <!-- Title Bar -->
+      <div class="overlay-header">
+        <div class="app-brand">
+          <span class="app-icon">🎯</span>
+          <span class="app-title">VibeSense AI</span>
+        </div>
+        <div class="app-badge">⚡ 2.5 Flash</div>
+      </div>
+
+      <!-- Analysis Results Body -->
+      <div class="overlay-body">
+        
+        <!-- Atmosphere & Vibe -->
+        <div class="card">
+          <div class="card-title card-title-vibe">
+            <span>🎭</span> АТМОСФЕРА И СКРЫТЫЙ ПОДТЕКСТ
+          </div>
+          <div class="summary-text">
+            Скрытый ультиматум и сильное беспокойство из-за дедлайна под маской деловой вежливости. Смайлик «🙂» выражает пассивную агрессию и потерю доверия.
+          </div>
+
+          <!-- Metrics -->
+          <div class="metrics-row">
+            <div class="metric-pill">
+              <span class="metric-label">Градус накала</span>
+              <span class="metric-val val-tension">7 / 10 🔥</span>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-label">Формальность</span>
+              <span class="metric-val val-formality">8 / 10 👔</span>
+            </div>
+          </div>
+
+          <div class="rules-box">
+            <b>Негласное правило:</b> Никаких оправданий болезнями сотрудников и «багами». Это уничтожает авторитет и ведёт к штрафам. Требуется уверенный ответ с конкретными часами релиза.
+          </div>
+        </div>
+
+        <!-- Critique of User Draft -->
+        <div class="card">
+          <div class="card-title card-title-advice">
+            <span>🔍</span> АУДИТ ВАШЕГО ЧЕРНОВИКА
+          </div>
+          <div class="summary-text" style="font-size: 11.5px; color: #fca5a5;">
+            ❌ Слишком много извинений. Оправдания показывают потерю контроля, а фраза «постараемся» лишь подтверждает худшие опасения заказчика.
+          </div>
+        </div>
+
+        <!-- Calibrated Ready Reply -->
+        <div class="reply-card">
+          <div class="reply-style">
+            <span>💼 СТИЛЬ «УВЕРЕННОСТЬ И ФАКТЫ»</span>
+            <span class="copy-pill">✓ Скопировано</span>
+          </div>
+          <div class="reply-text">
+            «Добрый день, Алексей. Модуль витрины и платёжный шлюз сейчас на этапе финального тестирования безопасности. Сегодня к 17:00 выкатываем обновление на тест и присылаем вам отчёт. К четвергу и совету директоров всё будет готово в штатном режиме.»
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
