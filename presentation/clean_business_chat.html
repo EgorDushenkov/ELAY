@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Деловая переписка</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 30px;
+    }
+
+    /* Messenger Window Container */
+    .messenger-window {
+      width: 720px;
+      height: 760px;
+      background-color: #0e1621;
+      border: 1px solid #242f3d;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+    }
+
+    /* Window Header */
+    .window-titlebar {
+      background-color: #17212b;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #242f3d;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 7px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+    .dot-red { background-color: #ef4444; }
+    .dot-yellow { background-color: #f59e0b; }
+    .dot-green { background-color: #10b981; }
+
+    .window-title {
+      font-size: 12px;
+      color: #798b9c;
+      font-weight: 500;
+    }
+
+    /* Contact Bar */
+    .contact-bar {
+      background-color: #17212b;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #242f3d;
+    }
+
+    .contact-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    .contact-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f5f5f5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-client {
+      font-size: 10px;
+      background-color: #1e293b;
+      color: #38bdf8;
+      border: 1px solid #0284c7;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .contact-status {
+      font-size: 12px;
+      color: #00c980;
+      margin-top: 2px;
+    }
+
+    .contact-actions {
+      display: flex;
+      gap: 16px;
+      color: #798b9c;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* Chat Messages Body */
+    .chat-body {
+      flex: 1;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background-color: #0e1621;
+      background-image: radial-gradient(#1c2733 1px, transparent 1px);
+      background-size: 20px 20px;
+      overflow-y: auto;
+    }
+
+    .date-separator {
+      align-self: center;
+      background-color: #182533;
+      color: #798b9c;
+      font-size: 11.5px;
+      padding: 4px 14px;
+      border-radius: 12px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    /* Message Bubbles */
+    .msg-row {
+      display: flex;
+      width: 100%;
+    }
+
+    .msg-in {
+      justify-content: flex-start;
+    }
+
+    .msg-out {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: 82%;
+      padding: 10px 14px;
+      font-size: 13.5px;
+      line-height: 1.45;
+      position: relative;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .bubble-in {
+      background-color: #182533;
+      color: #f1f5f9;
+      border-radius: 14px 14px 14px 2px;
+      border: 1px solid #243547;
+    }
+
+    .bubble-out {
+      background-color: #2b5278;
+      color: #ffffff;
+      border-radius: 14px 14px 2px 14px;
+      border: 1px solid #3b6b9b;
+    }
+
+    .meta {
+      float: right;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 10px;
+      margin-top: 5px;
+      font-size: 11px;
+    }
+
+    .meta-in {
+      color: #6c7883;
+    }
+
+    .meta-out {
+      color: #8da4bd;
+    }
+
+    .checks {
+      color: #4ade80;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Bottom Input Bar */
+    .input-bar {
+      background-color: #17212b;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-top: 1px solid #242f3d;
+    }
+
+    .input-icon {
+      color: #798b9c;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .input-field {
+      flex: 1;
+      background-color: #0e1621;
+      border: 1px solid #242f3d;
+      border-radius: 20px;
+      padding: 9px 16px;
+      font-size: 13.5px;
+      color: #798b9c;
+      outline: none;
+    }
+
+    .send-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #2b5278;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="messenger-window">
+    <!-- Window Titlebar -->
+    <div class="window-titlebar">
+      <div class="window-controls">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+      </div>
+      <div class="window-title">Telegram Desktop</div>
+    </div>
+
+    <!-- Contact Info Bar -->
+    <div class="contact-bar">
+      <div class="contact-left">
+        <div class="avatar">АМ</div>
+        <div>
+          <div class="contact-name">
+            Алексей Морозов
+            <span class="badge-client">ЗАКАЗЧИК</span>
+          </div>
+          <div class="contact-status">в сети</div>
+        </div>
+      </div>
+      <div class="contact-actions">
+        <span>🔍</span>
+        <span>📞</span>
+        <span>⋮</span>
+      </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-body">
+      <div class="date-separator">Сегодня</div>
+
+      <!-- Message 1 (Заказчик) -->
+      <div class="msg-row msg-in">
+        <div class="bubble bubble-in">
+          Добрый день! Хотел уточнить статус по нашему проекту. По договору запуск витрины и платёжного шлюза запланирован на этот четверг.
+          <div class="meta meta-in">
+            <span>10:45</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message 2 (Заказчик - нарастание напряжения) -->
+      <div class="msg-row msg-in">
+        <div class="bubble bubble-in">
+          Сегодня уже вторник, а на тестовом стенде до сих пор нет обновлений. Мы вообще успеваем, или у вас возникли сложности? 🙂
+          <div class="meta meta-in">
+            <span>10:46</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message 3 (Исполнитель - спокойный деловой ответ) -->
+      <div class="msg-row msg-out">
+        <div class="bubble bubble-out">
+          Здравствуйте, Алексей! Модуль витрины и эквайринг сейчас проходят финальное нагрузочное тестирование и аудит безопасности.
+          <div class="meta meta-out">
+            <span>10:48</span>
+            <span class="checks">✓✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message 4 (Заказчик - жесткое требование дедлайна) -->
+      <div class="msg-row msg-in">
+        <div class="bubble bubble-in">
+          Нам критически важно понимать реальную картину заранее. В пятницу презентация совету директоров, срыв сроков для нас абсолютно неприемлем. Когда именно мы сможем всё проверить?
+          <div class="meta meta-in">
+            <span>10:50</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message 5 (Исполнитель - четкие факты и тайминг) -->
+      <div class="msg-row msg-out">
+        <div class="bubble bubble-out">
+          Сегодня к 16:30 мы полностью выкатываем обновление на тест и отправляем вам подробный отчёт с доступами. К четвергу и совету директоров всё будет готово в штатном режиме.
+          <div class="meta meta-out">
+            <span>10:52</span>
+            <span class="checks">✓✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message 6 (Заказчик - снятие накала и договоренность) -->
+      <div class="msg-row msg-in">
+        <div class="bubble bubble-in">
+          Отлично, договорились. Буду ждать отчёт в 16:30, спасибо за оперативность.
+          <div class="meta meta-in">
+            <span>10:54</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Input Bar -->
+    <div class="input-bar">
+      <span class="input-icon">📎</span>
+      <input type="text" class="input-field" placeholder="Напишите сообщение..." readonly value="Принято, до связи!">
+      <span class="input-icon">😊</span>
+      <div class="send-btn">➤</div>
+    </div>
+  </div>
+
+</body>
+</html>
